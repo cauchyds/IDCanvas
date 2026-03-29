@@ -128,14 +128,7 @@ export default function App() {
           settings={settings}
         />
 
-        {cardPairs.length === 0 && (
-          <div className="app-empty-state">
-            <p>👆 上传扫描的证件图片开始使用</p>
-            <p style={{ marginTop: '8px', fontSize: '0.75rem' }}>
-              按顺序上传（正面→反面→正面→反面...），系统会自动配对
-            </p>
-          </div>
-        )}
+
       </main>
 
       <footer className="app-footer">
