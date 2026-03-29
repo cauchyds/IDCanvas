@@ -21,95 +21,70 @@ export function calculateLayout(cardCount, settings) {
   const usableW = paperWidth - margin * 2;
   const usableH = paperHeight - margin * 2;
 
-  let pairsPerPage;
-  let positions = [];
-
-  // Default to 1 to avoid division by zero
-  let cols = 1, rows = 1;
-
+  let groupW, groupH;
   if (orientation === 'landscape') {
     // Landscape: Front and back side by side horizontally
-    const groupW = cardW * 2 + gap;
-    const groupH = cardH;
-
-    cols = Math.floor((usableW + gap) / (groupW + gap));
-    rows = Math.floor((usableH + gap) / (groupH + gap));
-    if (cols < 1) cols = 1;
-    if (rows < 1) rows = 1;
-    pairsPerPage = cols * rows;
-
-    // Calculate grid total size
-    const totalW = cols * (groupW + gap) - gap;
-    const totalH = rows * (groupH + gap) - gap;
-
-    // Calculate centering offset
-    const offsetX = (paperWidth - totalW) / 2;
-    const offsetY = (paperHeight - totalH) / 2;
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const baseX = offsetX + col * (groupW + gap);
-        const baseY = offsetY + row * (groupH + gap);
-        positions.push({
-          frontX: baseX,
-          frontY: baseY,
-          backX: baseX + cardW + gap,
-          backY: baseY,
-        });
-      }
-    }
+    groupW = cardW * 2 + gap;
+    groupH = cardH;
   } else {
     // Portrait: Front and back stacked vertically
-    const groupW = cardW;
-    const groupH = cardH * 2 + gap;
+    groupW = cardW;
+    groupH = cardH * 2 + gap;
+  }
 
-    cols = Math.floor((usableW + gap) / (groupW + gap));
-    rows = Math.floor((usableH + gap) / (groupH + gap));
-    if (cols < 1) cols = 1;
-    if (rows < 1) rows = 1;
-    pairsPerPage = cols * rows;
+  let maxCols = Math.floor((usableW + gap) / (groupW + gap));
+  let maxRows = Math.floor((usableH + gap) / (groupH + gap));
+  if (maxCols < 1) maxCols = 1;
+  if (maxRows < 1) maxRows = 1;
+  
+  const pairsPerPage = maxCols * maxRows;
+  const numPages = Math.max(1, Math.ceil(cardCount / pairsPerPage));
+  const pages = [];
 
-    // Calculate grid total size
-    const totalW = cols * (groupW + gap) - gap;
-    const totalH = rows * (groupH + gap) - gap;
-
-    // Calculate centering offset
+  for (let pageIdx = 0; pageIdx < numPages; pageIdx++) {
+    const startIdx = pageIdx * pairsPerPage;
+    const endIdx = Math.min(startIdx + pairsPerPage, cardCount);
+    const countOnPage = cardCount === 0 ? 0 : endIdx - startIdx;
+    
+    // Calculate actual grid size dynamically for this specific page
+    const actualCols = Math.min(maxCols, countOnPage || 1);
+    const actualRows = Math.ceil((countOnPage || 1) / actualCols);
+    
+    // Calculate actual bounded size
+    const totalW = actualCols * (groupW + gap) - gap;
+    const totalH = actualRows * (groupH + gap) - gap;
+    
+    // Dynamic centering based on actual content
     const offsetX = (paperWidth - totalW) / 2;
     const offsetY = (paperHeight - totalH) / 2;
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const baseX = offsetX + col * (groupW + gap);
-        const baseY = offsetY + row * (groupH + gap);
-        positions.push({
-          frontX: baseX,
-          frontY: baseY,
-          backX: baseX,
-          backY: baseY + cardH + gap,
-        });
-      }
+    const pageItems = [];
+    for (let i = 0; i < countOnPage; i++) {
+        const c = i % actualCols;
+        const r = Math.floor(i / actualCols);
+        const baseX = offsetX + c * (groupW + gap);
+        const baseY = offsetY + r * (groupH + gap);
+
+        if (orientation === 'landscape') {
+            pageItems.push({
+                index: startIdx + i,
+                frontX: baseX, frontY: baseY,
+                backX: baseX + cardW + gap, backY: baseY
+            });
+        } else {
+            pageItems.push({
+                index: startIdx + i,
+                frontX: baseX, frontY: baseY,
+                backX: baseX, backY: baseY + cardH + gap
+            });
+        }
     }
-  }
-
-  // Distribute card pairs across pages
-  const pages = [];
-  for (let i = 0; i < cardCount; i++) {
-    const pageIdx = Math.floor(i / pairsPerPage);
-    const posIdx = i % pairsPerPage;
-
-    if (!pages[pageIdx]) pages[pageIdx] = [];
-
-    const position = positions[posIdx] || positions[0];
-
-    pages[pageIdx].push({
-      index: i,
-      ...position,
-    });
+    pages.push(pageItems);
   }
 
   return {
     pages,
-    pairsPerPage: pairsPerPage,
+    pairsPerPage,
     cardWidthMm: cardW,
     cardHeightMm: cardH,
     paperWidthMm: paperWidth,

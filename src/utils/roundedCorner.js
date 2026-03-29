@@ -8,13 +8,14 @@ export function clipRoundedCorners(img, cornerRadiusPx) {
   canvas.height = img.naturalHeight || img.height;
   const ctx = canvas.getContext('2d');
 
+  const w = canvas.width;
+  const h = canvas.height;
+
   // Fill entire canvas with white first to avoid black corners in JPEG
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, w, h);
 
   // Draw rounded rectangle clip path
-  const w = canvas.width;
-  const h = canvas.height;
   const r = Math.min(cornerRadiusPx, w / 2, h / 2);
 
   ctx.beginPath();
