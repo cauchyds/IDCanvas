@@ -1,4 +1,4 @@
-# 🪪 CardPrint — 证件扫描排版打印工具
+# 🪪 IDCanvas — 证件画布
 
 将 ScanSnap 等扫描仪扫描的证件正反面照片（身份证、驾照等），以**原始尺寸**排版到 A4 或 Letter 纸张上，导出为 PDF 文件。
 
@@ -55,11 +55,11 @@ npm run preview
 
 1. 推送代码到 `main` 分支
 2. GitHub Actions 自动构建并部署
-3. 访问 `https://<你的用户名>.github.io/cardprint/`
+3. 访问 `https://<你的用户名>.github.io/idcanvas/`
 
 ### 首次部署步骤
 
-1. 在 GitHub 创建仓库 `cardprint`
+1. 在 GitHub 创建仓库 `idcanvas`
 2. 进入仓库 **Settings → Pages → Build and deployment**
 3. Source 选择 **GitHub Actions**
 4. 推送代码，等待部署完成
@@ -76,8 +76,8 @@ npm run preview
 
 ```bash
 # Clone 仓库
-git clone https://github.com/<用户名>/cardprint.git
-cd cardprint
+git clone https://github.com/<用户名>/idcanvas.git
+cd idcanvas
 
 # 安装依赖
 npm install

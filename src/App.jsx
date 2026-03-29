@@ -139,7 +139,7 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
-        CardPrint · 所有处理在本地浏览器完成，不上传任何数据
+        IDCanvas · 所有处理在本地浏览器完成，不上传任何数据
       </footer>
     </div>
   );

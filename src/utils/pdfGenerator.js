@@ -13,8 +13,8 @@ import { mmToPx } from './constants.js';
  */
 export async function generatePdf(cardPairs, settings) {
   const pdfDoc = await PDFDocument.create();
-  pdfDoc.setTitle('CardPrint - 证件扫描');
-  pdfDoc.setCreator('CardPrint');
+  pdfDoc.setTitle('IDCanvas - 证件扫描');
+  pdfDoc.setCreator('IDCanvas');
 
   const layoutResult = calculateLayout(cardPairs.length, settings);
   const { pages } = layoutResult;

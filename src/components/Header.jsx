@@ -5,7 +5,7 @@ export default function Header() {
     <header className="header" id="header">
       <div className="header-brand">
         <span className="header-logo">🪪</span>
-        <h1 className="header-title">CardPrint</h1>
+        <h1 className="header-title">IDCanvas</h1>
         <span className="header-subtitle">证件扫描排版打印</span>
       </div>
       <div className="header-actions">
