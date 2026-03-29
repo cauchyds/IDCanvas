@@ -51,7 +51,7 @@ export default function DropZone({ onFilesSelected }) {
       >
         <div className="dropzone-content">
           <div className="dropzone-icon">📁</div>
-          <div className="dropzone-text">拖拽扫描图片到此处上传</div>
+          <div className="dropzone-text">拖拽证件的正反面图片到此上传</div>
           <div className="dropzone-hint">
             支持 JPG / PNG 格式 · 按顺序上传（正面、反面、正面、反面...）
           </div>
