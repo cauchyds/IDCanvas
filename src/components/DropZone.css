@@ -1,0 +1,77 @@
+.dropzone-wrapper {
+  padding: 0 var(--space-lg);
+  animation: fadeInUp 0.5s ease both;
+}
+
+.dropzone {
+  position: relative;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  background: var(--bg-glass);
+  overflow: hidden;
+}
+
+.dropzone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  border-radius: inherit;
+}
+
+.dropzone:hover,
+.dropzone.drag-over {
+  border-color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.dropzone.drag-over::before {
+  opacity: 0.05;
+}
+
+.dropzone.drag-over {
+  transform: scale(1.01);
+  box-shadow: var(--shadow-glow);
+}
+
+.dropzone-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.dropzone-icon {
+  font-size: 3rem;
+  line-height: 1;
+  animation: pulse 3s ease infinite;
+}
+
+.dropzone-text {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.dropzone-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.dropzone-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.dropzone input[type="file"] {
+  display: none;
+}
