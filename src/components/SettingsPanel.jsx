@@ -22,15 +22,15 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
         </div>
 
         <div className="input-group">
-          <label htmlFor="layout-mode">排列方式</label>
+          <label htmlFor="orientation">纸张方向</label>
           <select
             className="input-field"
-            id="layout-mode"
-            value={settings.layout}
-            onChange={(e) => update('layout', e.target.value)}
+            id="orientation"
+            value={settings.orientation}
+            onChange={(e) => update('orientation', e.target.value)}
           >
-            <option value="side-by-side">← → 左右并排</option>
-            <option value="stacked">↑ ↓ 上下排列</option>
+            <option value="portrait">竖向 (上下排列)</option>
+            <option value="landscape">横向 (左右并排)</option>
           </select>
         </div>
 

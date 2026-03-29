@@ -16,12 +16,11 @@ export async function generatePdf(cardPairs, settings) {
   pdfDoc.setTitle('CardPrint - 证件扫描');
   pdfDoc.setCreator('CardPrint');
 
-  const paper = PAPER_SIZES[settings.paperSize];
-  const paperWPt = paper.width * MM_TO_PT;
-  const paperHPt = paper.height * MM_TO_PT;
-
   const layoutResult = calculateLayout(cardPairs.length, settings);
   const { pages } = layoutResult;
+
+  const paperWPt = layoutResult.paperWidthMm * MM_TO_PT;
+  const paperHPt = layoutResult.paperHeightMm * MM_TO_PT;
 
   const cornerRadiusPx = settings.roundedCorners
     ? mmToPx(settings.cornerRadius, settings.dpi)

@@ -25,10 +25,11 @@ export default function LayoutPreview({ cardPairs, settings, onSettingsChange })
     const canvas = canvasRef.current;
     if (!canvas || cardPairs.length === 0) return;
 
-    const paper = PAPER_SIZES[settings.paperSize];
-    const scale = PREVIEW_WIDTH / paper.width;
+    const paperW = layoutResult.paperWidthMm;
+    const paperH = layoutResult.paperHeightMm;
+    const scale = PREVIEW_WIDTH / paperW;
     const canvasW = PREVIEW_WIDTH;
-    const canvasH = paper.height * scale;
+    const canvasH = paperH * scale;
 
     // Handle HiDPI
     const dpr = window.devicePixelRatio || 1;
