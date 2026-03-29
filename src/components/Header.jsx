@@ -5,7 +5,7 @@ export default function Header() {
     <header className="header" id="header">
       <div className="header-brand">
         <div className="header-logo-wrapper">
-          <img src="/favicon.svg" alt="IDCanvas Logo" className="header-logo-img" />
+          <img src="./favicon.svg" alt="IDCanvas Logo" className="header-logo-img" />
         </div>
         <div className="header-titles">
           <h1 className="header-title">IDCanvas</h1>
