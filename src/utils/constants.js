@@ -18,8 +18,6 @@ export const DEFAULT_SETTINGS = {
   orientation: 'portrait',   // 'portrait' or 'landscape'
   dpi: 300,
   cornerRadius: 3,           // mm
-  margin: 10,                // mm
-  gap: 10,                   // mm increased default space
   roundedCorners: true,
 };
 

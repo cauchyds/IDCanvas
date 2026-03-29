@@ -49,7 +49,7 @@ export default function LayoutPreview({ cardPairs, settings, onSettingsChange })
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 0.5;
     ctx.setLineDash([4, 4]);
-    const m = settings.margin * scale;
+    const m = 10 * scale; // Standard 10mm guide
     ctx.strokeRect(m, m, canvasW - m * 2, canvasH - m * 2);
     ctx.setLineDash([]);
 

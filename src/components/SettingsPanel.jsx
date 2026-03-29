@@ -81,43 +81,6 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
         </div>
       )}
 
-      <div className="settings-divider" />
-
-      <div className="settings-grid">
-        <div className="range-group">
-          <div className="range-header">
-            <span className="range-label">页边距</span>
-            <span className="range-value">{settings.margin}mm</span>
-          </div>
-          <input
-            type="range"
-            className="range-input"
-            min="5"
-            max="20"
-            step="1"
-            value={settings.margin}
-            onChange={(e) => update('margin', Number(e.target.value))}
-            id="margin-slider"
-          />
-        </div>
-
-        <div className="range-group">
-          <div className="range-header">
-            <span className="range-label">证件间距</span>
-            <span className="range-value">{settings.gap}mm</span>
-          </div>
-          <input
-            type="range"
-            className="range-input"
-            min="2"
-            max="15"
-            step="1"
-            value={settings.gap}
-            onChange={(e) => update('gap', Number(e.target.value))}
-            id="gap-slider"
-          />
-        </div>
-      </div>
     </div>
   );
 }

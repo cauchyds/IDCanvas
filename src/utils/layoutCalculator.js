@@ -1,7 +1,8 @@
 import { PAPER_SIZES, CARD_WIDTH_MM, CARD_HEIGHT_MM } from './constants.js';
 
 /**
- * Calculate layout positions for card pairs on pages.
+ * Calculate layout positions for card pairs on pages, 
+ * automatically and evenly distributing them across the paper.
  * 
  * @param {number} cardCount - Number of card pairs
  * @param {object} settings - Layout settings
@@ -9,7 +10,11 @@ import { PAPER_SIZES, CARD_WIDTH_MM, CARD_HEIGHT_MM } from './constants.js';
  */
 export function calculateLayout(cardCount, settings) {
   const paperDef = PAPER_SIZES[settings.paperSize];
-  const { margin, gap, orientation } = settings;
+  const { orientation } = settings;
+
+  // Use a sensible internal minimum margin and gap for capacity checks
+  const minMargin = 10;
+  const minGap = 10;
 
   // Swap paper width and height if landscape
   const paperWidth = orientation === 'landscape' ? paperDef.height : paperDef.width;
@@ -18,22 +23,23 @@ export function calculateLayout(cardCount, settings) {
   const cardW = CARD_WIDTH_MM;
   const cardH = CARD_HEIGHT_MM;
 
-  const usableW = paperWidth - margin * 2;
-  const usableH = paperHeight - margin * 2;
+  const usableW = paperWidth - minMargin * 2;
+  const usableH = paperHeight - minMargin * 2;
 
   let groupW, groupH;
   if (orientation === 'landscape') {
     // Landscape: Front and back side by side horizontally
-    groupW = cardW * 2 + gap;
+    groupW = cardW * 2 + minGap;
     groupH = cardH;
   } else {
     // Portrait: Front and back stacked vertically
     groupW = cardW;
-    groupH = cardH * 2 + gap;
+    groupH = cardH * 2 + minGap;
   }
 
-  let maxCols = Math.floor((usableW + gap) / (groupW + gap));
-  let maxRows = Math.floor((usableH + gap) / (groupH + gap));
+  // Determine MAX pairs that can fit on a page
+  let maxCols = Math.floor((usableW + minGap) / (groupW + minGap));
+  let maxRows = Math.floor((usableH + minGap) / (groupH + minGap));
   if (maxCols < 1) maxCols = 1;
   if (maxRows < 1) maxRows = 1;
   
@@ -44,40 +50,63 @@ export function calculateLayout(cardCount, settings) {
   for (let pageIdx = 0; pageIdx < numPages; pageIdx++) {
     const startIdx = pageIdx * pairsPerPage;
     const endIdx = Math.min(startIdx + pairsPerPage, cardCount);
+    // Number of pairs actually on this page
     const countOnPage = cardCount === 0 ? 0 : endIdx - startIdx;
     
-    // Calculate actual grid size dynamically for this specific page
+    // Dynamic grid size for this page specifically
     const actualCols = Math.min(maxCols, countOnPage || 1);
     const actualRows = Math.ceil((countOnPage || 1) / actualCols);
     
-    // Calculate actual bounded size
-    const totalW = actualCols * (groupW + gap) - gap;
-    const totalH = actualRows * (groupH + gap) - gap;
+    // Determine card-level grid dimensions
+    let totalCardCols, totalCardRows;
+    if (orientation === 'landscape') {
+        totalCardCols = actualCols * 2; // Each pair is 2 columns
+        totalCardRows = actualRows * 1; // Each pair is 1 row
+    } else {
+        totalCardCols = actualCols * 1; // Each pair is 1 column
+        totalCardRows = actualRows * 2; // Each pair is 2 rows
+    }
+
+    // Distribute remaining space evenly between borders and inner gaps
+    const remainingW = paperWidth - (totalCardCols * cardW);
+    const remainingH = paperHeight - (totalCardRows * cardH);
     
-    // Dynamic centering based on actual content
-    const offsetX = (paperWidth - totalW) / 2;
-    const offsetY = (paperHeight - totalH) / 2;
+    // spacingX = margin_left = middle_gaps = margin_right
+    const spacingX = remainingW / (totalCardCols + 1);
+    const spacingY = remainingH / (totalCardRows + 1);
 
     const pageItems = [];
     for (let i = 0; i < countOnPage; i++) {
-        const c = i % actualCols;
-        const r = Math.floor(i / actualCols);
-        const baseX = offsetX + c * (groupW + gap);
-        const baseY = offsetY + r * (groupH + gap);
-
+        const pairCol = i % actualCols;
+        const pairRow = Math.floor(i / actualCols);
+        
+        // Convert to absolute card positions in the grid
+        let frontCol, frontRow, backCol, backRow;
+        
         if (orientation === 'landscape') {
-            pageItems.push({
-                index: startIdx + i,
-                frontX: baseX, frontY: baseY,
-                backX: baseX + cardW + gap, backY: baseY
-            });
+            frontCol = pairCol * 2;
+            frontRow = pairRow;
+            backCol = pairCol * 2 + 1;
+            backRow = pairRow;
         } else {
-            pageItems.push({
-                index: startIdx + i,
-                frontX: baseX, frontY: baseY,
-                backX: baseX, backY: baseY + cardH + gap
-            });
+            frontCol = pairCol;
+            frontRow = pairRow * 2;
+            backCol = pairCol;
+            backRow = pairRow * 2 + 1;
         }
+
+        const frontX = spacingX + frontCol * (cardW + spacingX);
+        const frontY = spacingY + frontRow * (cardH + spacingY);
+        
+        const backX = spacingX + backCol * (cardW + spacingX);
+        const backY = spacingY + backRow * (cardH + spacingY);
+        
+
+        pageItems.push({
+            index: startIdx + i,
+            frontX, frontY,
+            backX, backY
+        });
     }
     pages.push(pageItems);
   }
